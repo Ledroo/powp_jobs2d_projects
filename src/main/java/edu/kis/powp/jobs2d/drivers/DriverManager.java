@@ -2,6 +2,7 @@ package edu.kis.powp.jobs2d.drivers;
 
 import edu.kis.powp.jobs2d.Job2dDriver;
 import edu.kis.powp.jobs2d.LoggerDriver;
+import edu.kis.powp.observer.Publisher;
 
 public class DriverManager {
 
@@ -21,4 +22,10 @@ public class DriverManager {
         return currentDriver;
     }
 
+    /**
+     * @return changePublisher.
+     */
+    public Publisher getChangePublisher() {
+        return changePublisher;
+    }
 }
