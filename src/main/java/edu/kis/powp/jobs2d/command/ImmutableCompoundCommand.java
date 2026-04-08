@@ -29,7 +29,7 @@ public class ImmutableCompoundCommand implements ICompoundCommand {
 
     @Override
     public Iterator<DriverCommand> iterator() {
-        return null;
+        return commands.iterator();
     }
 
     @Override
