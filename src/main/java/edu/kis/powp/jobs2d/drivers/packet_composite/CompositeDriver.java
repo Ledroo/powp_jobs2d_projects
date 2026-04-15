@@ -61,6 +61,6 @@ public class CompositeDriver implements Job2dDriver {
 
     @Override
     public String toString() {
-        return "\"" + name + "\" with: " + drivers.size() + " drivers";
+        return name;
     }
 }

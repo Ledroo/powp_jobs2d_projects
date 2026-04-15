@@ -2,6 +2,7 @@ package edu.kis.powp.jobs2d;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import edu.kis.powp.jobs2d.command.gui.CommandManagerWindow;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
 import edu.kis.powp.jobs2d.drivers.logger.TrackingLoggerDriver;
+import edu.kis.powp.jobs2d.drivers.packet_composite.CompositeDriver;
 import edu.kis.powp.jobs2d.drivers.transformations.*;
 import edu.kis.powp.jobs2d.events.SelectLoadSecretCommandOptionListener;
 import edu.kis.powp.jobs2d.events.SelectRunCurrentCommandOptionListener;
@@ -69,6 +71,11 @@ public class TestJobs2dApp {
         DriverFeature.addDriver("Special line Simulator", driver);
         DriverFeature.updateDriverInfo();
 
+        CompositeDriver basicCompositeDriver = new CompositeDriver("Basic & Log Composite Driver");
+        basicCompositeDriver.addDriver(TrackingLoggerDriver);
+        basicCompositeDriver.addDriver(driver);
+        DriverFeature.addDriver(basicCompositeDriver.toString(), basicCompositeDriver);
+
         CoordinateTransformer scale = new ScaleTransformer(2.0, 2.0);
         Job2dDriver scaledDriver = new TransformingDriver(driver, scale, "Transform: Scaled 2x");
         DriverFeature.addDriver(scaledDriver.toString(), scaledDriver);
@@ -87,6 +94,12 @@ public class TestJobs2dApp {
 
         Job2dDriver scaledAndRotatedDriver = new TransformingDriver(scaledDriver, rotate, "Transform: Scaled 2x & Rotated 45");
         DriverFeature.addDriver(scaledAndRotatedDriver.toString(), scaledAndRotatedDriver);
+
+        CompositeDriver chaosCompositeDriver = new CompositeDriver("Chaos Composite Driver");
+        chaosCompositeDriver.addDriver(driver);
+        chaosCompositeDriver.addDriver(TrackingLoggerDriver);
+        chaosCompositeDriver.addDriver(scaledDownDriver);
+        DriverFeature.addDriver(chaosCompositeDriver.toString(), chaosCompositeDriver);
     }
 
     private static void setupWindows(Application application) {
