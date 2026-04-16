@@ -27,6 +27,6 @@ public enum TriangleFormat implements CanvasFormat {
 
     @Override
     public String getName() {
-        return "Triangle Format Canvas (" + base + "x" + height + ")";
+        return "Triangle Format Canvas (" + name() + " - " + base + "x" + height + ")";
     }
 }

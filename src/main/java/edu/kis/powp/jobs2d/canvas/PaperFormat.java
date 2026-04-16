@@ -22,6 +22,6 @@ public enum PaperFormat implements CanvasFormat {
 
     @Override
     public String getName() {
-        return "Paper Format Canvas (" + width + "x" + height + ")";
+        return "Paper Format Canvas (" + name() + " - " + width + "x" + height + ")";
     }
 }
