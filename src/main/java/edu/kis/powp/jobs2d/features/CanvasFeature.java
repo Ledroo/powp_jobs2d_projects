@@ -55,8 +55,6 @@ public class CanvasFeature implements IFeature {
             return;
         }
 
-        DrawerFeature.getDrawerController().clearPanel();
-
         SimpleComplexCommandBuilder pathBuilder = new SimpleComplexCommandBuilder();
 
         PathIterator segments = format.getShape().getPathIterator(null);
