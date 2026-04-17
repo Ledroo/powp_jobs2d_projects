@@ -9,8 +9,18 @@ import edu.kis.powp.jobs2d.canvas.TriangleFormat;
 
 import java.awt.geom.PathIterator;
 
-public class CanvasFeature {
+public class CanvasFeature implements IFeature {
     private static CanvasFormat currentFormat;
+
+    @Override
+    public void setup(Application application) {
+        setupCanvasPlugin(application);
+    }
+
+    @Override
+    public String getName() {
+        return "Canvas";
+    }
 
     public static void setupCanvasPlugin(Application application) {
         application.addComponentMenu(CanvasFeature.class, "Canvas", 0);

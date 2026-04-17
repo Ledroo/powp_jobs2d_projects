@@ -32,9 +32,6 @@ public class DrawerFeature implements IFeature {
         application.addComponentMenuElement(DrawPanelController.class, "Clear Panel", selectClearPanelOptionListener);
 
         drawerController.initialize(application.getFreePanel());
-
-        CanvasFeature.setupCanvasPlugin(application);
-        CanvasFeature.setCanvas(PaperFormat.A4);
     }
 
     /**
