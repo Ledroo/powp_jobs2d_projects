@@ -41,7 +41,7 @@ public class RectangleCanvas extends ShapeBasedCanvas {
 
     @Override
     protected ICompoundCommand buildCommand() {
-        return ShapeCommandFactory.fromShape(ShapeCommandFactory.createRectangleShape(width, height, margin));
+        return ShapeCommandFactory.fromRectangle(width, height, margin);
     }
 
     @Override

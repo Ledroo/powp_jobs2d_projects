@@ -6,7 +6,7 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 
 public class ShapeCommandFactory {
-    public static ICompoundCommand fromShape(Shape shape) {
+    private static ICompoundCommand fromShape(Shape shape) {
         SimpleComplexCommandBuilder pathBuilder = new SimpleComplexCommandBuilder();
 
         PathIterator segments = shape.getPathIterator(null);
@@ -38,23 +38,27 @@ public class ShapeCommandFactory {
         return pathBuilder.build();
     }
 
-    public static Shape createRectangleShape(int width, int height, int margin) {
-        return new Rectangle2D.Double(
+    public static ICompoundCommand fromRectangle(int width, int height, int margin) {
+        Shape rectangle =  new Rectangle2D.Double(
                 (double) -width / 2,
                 (double) -height / 2,
                 width - 2.0 * margin,
                 height - 2.0 * margin
         );
+
+        return fromShape(rectangle);
     }
 
-    public static Shape createCircleShape(int centerX, int centerY, int radius, int margin) {
+    public static ICompoundCommand fromCircle(int centerX, int centerY, int radius, int margin) {
         int effectiveRadius = radius - margin;
 
-        return new Ellipse2D.Double(
+        Shape circle = new Ellipse2D.Double(
                 centerX - effectiveRadius,
                 centerY - effectiveRadius,
                 2.0 * effectiveRadius,
                 2.0 * effectiveRadius
         );
+
+        return fromShape(circle);
     }
 }

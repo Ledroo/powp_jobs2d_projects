@@ -41,7 +41,7 @@ public class CircleCanvas extends ShapeBasedCanvas {
 
     @Override
     protected ICompoundCommand buildCommand() {
-        return ShapeCommandFactory.fromShape(ShapeCommandFactory.createCircleShape(centerX, centerY, radius, margin));
+        return ShapeCommandFactory.fromCircle(centerX, centerY, radius, margin);
     }
 
     @Override
