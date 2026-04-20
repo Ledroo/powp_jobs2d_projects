@@ -29,6 +29,8 @@ public class SetPositionCommand implements DriverCommand {
     @Override
     public SetPositionCommand deepCopy() {
         return new SetPositionCommand(posX, posY);
+    }
+
     public int getPosX() {
         return posX;
     }
