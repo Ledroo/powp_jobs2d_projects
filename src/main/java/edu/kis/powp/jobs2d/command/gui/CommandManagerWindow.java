@@ -16,10 +16,8 @@ import edu.kis.powp.appbase.gui.WindowComponent;
 import edu.kis.powp.jobs2d.command.manager.CommandManager;
 import edu.kis.powp.observer.Subscriber;
 import edu.kis.powp.jobs2d.command.io.CommandImporter;
-import edu.kis.powp.jobs2d.command.io.JsonCommandImporter;
-import edu.kis.powp.jobs2d.command.CompoundCommand;
-import edu.kis.powp.jobs2d.command.DriverCommand;
-
+import edu.kis.powp.jobs2d.command.io.CommandImporterFactory;
+import edu.kis.powp.jobs2d.command.ICompoundCommand;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -119,19 +117,11 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
             try {
                 String text = Files.readString(fileToImport.toPath());
 
-                CommandImporter importer;
-                String trimmedText = text.trim();
+                CommandImporter importer = CommandImporterFactory.getImporter(text);
 
-                if (trimmedText.startsWith("[") || trimmedText.startsWith("{")) {
-                    importer = new JsonCommandImporter();
-                } else {
-                    throw new IllegalArgumentException("TXT file format not recognized. Was expecting JSON.");
-                }
+                ICompoundCommand importedCommand = importer.importCommands(text);
 
-                List<DriverCommand> commands = importer.importCommands(text);
-
-                CompoundCommand compoundCommand = new CompoundCommand(commands, fileToImport.getName());
-                commandManager.setCurrentCommand(compoundCommand);
+                commandManager.setCurrentCommand(importedCommand);
             } catch (IOException ex) {
                 System.err.println("Error reading the file: " + ex.getMessage());
             } catch (Exception ex) {

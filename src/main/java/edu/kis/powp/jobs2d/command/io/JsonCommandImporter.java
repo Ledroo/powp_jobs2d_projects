@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import edu.kis.powp.jobs2d.command.DriverCommand;
 import edu.kis.powp.jobs2d.command.OperateToCommand;
 import edu.kis.powp.jobs2d.command.SetPositionCommand;
+import edu.kis.powp.jobs2d.command.ICompoundCommand;
+import edu.kis.powp.jobs2d.command.CompoundCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
 public class JsonCommandImporter implements CommandImporter {
 
     @Override
-    public List<DriverCommand> importCommands(String text) {
+    public ICompoundCommand importCommands(String text) {
         List<DriverCommand> commandList = new ArrayList<>();
 
         JsonElement rootElement = JsonParser.parseString(text);
@@ -46,6 +48,6 @@ public class JsonCommandImporter implements CommandImporter {
             }
         }
 
-        return commandList;
+        return new CompoundCommand(commandList);
     }
 }
