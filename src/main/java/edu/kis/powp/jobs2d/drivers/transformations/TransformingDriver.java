@@ -36,4 +36,8 @@ public class TransformingDriver implements VisitableDriver {
     public void accept(DriverVisitor visitor) {
         visitor.visit(this);
     }
+
+    public VisitableDriver getInnerDriver() {
+        return innerDriver;
+    }
 }
