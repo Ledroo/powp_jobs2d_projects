@@ -37,10 +37,14 @@ public class DriverManager {
 
         CompositeDriver activeDriver = new CompositeDriver(coreDriver.toString());
         activeDriver.addDriver(coreDriver);
-        for (VisitableDriver ext : extensionsComposite.getDrivers()) {
-            activeDriver.addDriver(ext);
-        }
+        copyDrivers(extensionsComposite, activeDriver);
         return activeDriver;
+    }
+
+    private void copyDrivers(CompositeDriver source, CompositeDriver target) {
+        for (VisitableDriver driver : source.getDrivers()) {
+            target.addDriver(driver);
+        }
     }
 
     public synchronized VisitableDriver getCoreDriver() {

@@ -4,7 +4,6 @@ import edu.kis.powp.appbase.Application;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
 import edu.kis.powp.jobs2d.drivers.visitor.VisitableDriver;
 
-import java.awt.event.ActionEvent;
 
 public class ExtensionFeature implements IFeature {
 
@@ -24,15 +23,7 @@ public class ExtensionFeature implements IFeature {
     }
 
     public static void addExtension(String name, VisitableDriver extension) {
-        boolean[] isEnabled = {false};
-        app.addComponentMenuElementWithCheckBox(ExtensionFeature.class, name, (ActionEvent e) -> {
-            if (isEnabled[0]) {
-                driverManager.removeExtension(extension);
-                isEnabled[0] = false;
-            } else {
-                driverManager.addExtension(extension);
-                isEnabled[0] = true;
-            }
-        }, isEnabled[0]);
+        ExtensionToggleListener listener = new ExtensionToggleListener(driverManager, extension);
+        app.addComponentMenuElementWithCheckBox(ExtensionFeature.class, name, listener, listener.isEnabled());
     }
 }

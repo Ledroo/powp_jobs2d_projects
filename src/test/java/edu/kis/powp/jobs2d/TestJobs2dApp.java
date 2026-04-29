@@ -97,8 +97,6 @@ public class TestJobs2dApp {
      * @param application Application context.
      */
     private static void setupDrivers(Application application) {
-        VisitableDriver TrackingLoggerDriver = new TrackingLoggerDriver();
-        DriverFeature.addDriver("Tracking Logger driver", TrackingLoggerDriver);
 
         DrawPanelController drawerController = DrawerFeature.getDrawerController();
         VisitableDriver driver = new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic");
@@ -109,10 +107,6 @@ public class TestJobs2dApp {
         DriverFeature.addDriver("Special line Simulator", driver);
         DriverFeature.updateDriverInfo();
 
-        CompositeDriver basicCompositeDriver = new CompositeDriver("Basic & Log Composite Driver");
-        basicCompositeDriver.addDriver(TrackingLoggerDriver);
-        basicCompositeDriver.addDriver(driver);
-        DriverFeature.addDriver(basicCompositeDriver.toString(), basicCompositeDriver);
 
         CoordinateTransformer scale = new ScaleTransformer(2.0, 2.0);
         VisitableDriver scaledDriver = new TransformingDriver(driver, scale, "Transform: Scaled 2x");
@@ -135,7 +129,6 @@ public class TestJobs2dApp {
 
         CompositeDriver chaosCompositeDriver = new CompositeDriver("Chaos Composite Driver");
         chaosCompositeDriver.addDriver(driver);
-        chaosCompositeDriver.addDriver(TrackingLoggerDriver);
         chaosCompositeDriver.addDriver(scaledDownDriver);
         DriverFeature.addDriver(chaosCompositeDriver.toString(), chaosCompositeDriver);
       
