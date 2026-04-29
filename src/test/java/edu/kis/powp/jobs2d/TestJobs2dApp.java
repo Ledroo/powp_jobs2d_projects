@@ -74,16 +74,6 @@ public class TestJobs2dApp {
         application.addTest("FullNameGetter visitor test",
                 new SelectFullNameGetterVisitorTestListener(new FullNameGetterVisitor()));
 
-        RecordingDriver rec = RecordingFeature.getRecordingDriver();
-        boolean initial = rec.isRecordingEnabled();
-
-        application.addComponentMenuElementWithCheckBox(
-                DriverFeature.class,
-                "Recording",
-                new SelectToggleRecordingOptionListener(rec),
-                initial
-        );
-
         application.addComponentMenuElement(
                 DriverFeature.class,
                 "Clear recording",
@@ -146,6 +136,9 @@ public class TestJobs2dApp {
     private static void setupExtensions() {
         VisitableDriver loggerDriver = new TrackingLoggerDriver();
         ExtensionFeature.addExtension("Logger", loggerDriver);
+
+        RecordingDriver rec = RecordingFeature.getRecordingDriver();
+        ExtensionFeature.addMenuToggle("Recording", new SelectToggleRecordingOptionListener(rec), rec.isRecordingEnabled());
     }
 
     private static void setupWindows(Application application) {
