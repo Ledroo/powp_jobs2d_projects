@@ -115,7 +115,7 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToImport = fileChooser.getSelectedFile();
             try {
-                String text = Files.c(fileToImport.toPath());
+                String text = Files.readString(fileToImport.toPath());
 
                 CommandImporter importer = CommandImporterFactory.getImporter(text);
 
