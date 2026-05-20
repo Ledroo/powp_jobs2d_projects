@@ -13,7 +13,6 @@ import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver
 import edu.kis.powp.jobs2d.command.gui.CommandPreviewObserver;
 import edu.kis.powp.jobs2d.command.gui.CommandPreviewWindow;
 import edu.kis.powp.jobs2d.drivers.RealTimeDriver;
-import edu.kis.powp.jobs2d.drivers.RecordingDriver;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
 import edu.kis.powp.jobs2d.drivers.logger.TrackingLoggerDriver;
 import edu.kis.powp.jobs2d.drivers.packet_composite.CompositeDriver;
@@ -38,7 +37,6 @@ import edu.kis.powp.jobs2d.events.SelectLoadSecretCommandOptionListener;
 import edu.kis.powp.jobs2d.events.SelectRunCurrentCommandOptionListener;
 import edu.kis.powp.jobs2d.events.SelectTestFigure2OptionListener;
 import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
-import edu.kis.powp.jobs2d.events.SelectToggleRecordingOptionListener;
 import edu.kis.powp.jobs2d.events.SelectTransformCommandOptionListener;
 import edu.kis.powp.jobs2d.features.CanvasFeature;
 import edu.kis.powp.jobs2d.features.CommandsFeature;
@@ -50,7 +48,7 @@ import edu.kis.powp.jobs2d.features.RecordingFeature;
 import edu.kis.powp.jobs2d.features.MouseClickFeature;
 
 public class TestJobs2dApp {
-        private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
         /**
          * Setup test concerning preset figures in context.
@@ -136,33 +134,27 @@ public class TestJobs2dApp {
                 VisitableDriver loggerDriver = new TrackingLoggerDriver();
                 ExtensionFeature.addExtension("Logger", loggerDriver);
 
-                RecordingDriver rec = RecordingFeature.getRecordingDriver();
-                ExtensionFeature.addMenuToggle("Recording", new SelectToggleRecordingOptionListener(rec),
-                                rec.isRecordingEnabled());
+                ExtensionFeature.addExtension("Recording", RecordingFeature.getRecordingDriver());
 
-                CoordinateTransformer scale = new ScaleTransformer(2.0, 2.0);
-                VisitableDriver transformExt = new TransformingDriver(null, scale, "Transform: Scaled 2x");
+                VisitableDriver transformExt = new TransformingDriver(new ScaleTransformer(2.0, 2.0), "Transform: Scaled 2x");
                 ExtensionFeature.addExtension("Scale 2x", transformExt);
 
-                CoordinateTransformer scaleDown = new ScaleTransformer(0.5, 0.5);
-                VisitableDriver scaledDownDriver = new TransformingDriver(null, scaleDown, "Transform: Scaled 0.5x");
+                VisitableDriver scaledDownDriver = new TransformingDriver(new ScaleTransformer(0.5, 0.5), "Transform: Scaled 0.5x");
                 ExtensionFeature.addExtension("Scale 0.5x", scaledDownDriver);
 
-                CoordinateTransformer flip = new FlipTransformer(false, true);
-                VisitableDriver flippedDriver = new TransformingDriver(null, flip, "Transform: Flipped Y");
+                VisitableDriver flippedDriver = new TransformingDriver(new FlipTransformer(false, true), "Transform: Flipped Y");
                 ExtensionFeature.addExtension("Flip Y", flippedDriver);
 
-                CoordinateTransformer rotate = new RotateTransformer(45.0);
-                VisitableDriver rotatedDriver = new TransformingDriver(null, rotate, "Transform: Rotated 45 degrees");
+                VisitableDriver rotatedDriver = new TransformingDriver(new RotateTransformer(45.0), "Transform: Rotated 45 degrees");
                 ExtensionFeature.addExtension("Rotate 45 degrees", rotatedDriver);
 
-                VisitableDriver realTime1x = new RealTimeDriver(null, 10, 10, "Real-Time Driver 1x speed");
+                VisitableDriver realTime1x = new RealTimeDriver(10, 10, "Real-Time Driver 1x speed");
                 ExtensionFeature.addExtension("Real-Time 1x", realTime1x);
 
-                VisitableDriver realTime2x = new RealTimeDriver(null, 5, 5, "Real-Time Driver 2x speed");
+                VisitableDriver realTime2x = new RealTimeDriver(5, 5, "Real-Time Driver 2x speed");
                 ExtensionFeature.addExtension("Real-Time 2x", realTime2x);
 
-                VisitableDriver realTime10x = new RealTimeDriver(null, 1, 1, "Real-Time Driver 10x speed");
+                VisitableDriver realTime10x = new RealTimeDriver(1, 1, "Real-Time Driver 10x speed");
                 ExtensionFeature.addExtension("Real-Time 10x", realTime10x);
         }
 
@@ -237,7 +229,7 @@ public class TestJobs2dApp {
                                 FeaturesManager.setupAllFeatures(app);
 
                                 setupDrivers(app);
-                                RecordingFeature.setup(DriverFeature.getDriverManager());
+                                RecordingFeature.setup();
                                 setupExtensions();
                                 setupPresetTests(app);
                                 setupCommandTests(app);

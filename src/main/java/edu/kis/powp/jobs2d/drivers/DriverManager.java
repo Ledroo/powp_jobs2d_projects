@@ -16,7 +16,6 @@ public class DriverManager {
 
     private VisitableDriver coreDriver = new TrackingLoggerDriver();
     private CompositeDriver extensionsComposite = new CompositeDriver("Extensions");
-    private List<DriverDecorator> decorators = new ArrayList<>();
     private Publisher changePublisher = new Publisher();
 
     public synchronized void setCurrentDriver(VisitableDriver driver) {
@@ -29,43 +28,40 @@ public class DriverManager {
         changePublisher.notifyObservers();
     }
 
-    public synchronized void addDecorator(DriverDecorator decorator) {
-        decorators.add(decorator);
-        changePublisher.notifyObservers();
-    }
-
     public synchronized void removeExtension(VisitableDriver extension) {
         extensionsComposite.removeDriver(extension);
         changePublisher.notifyObservers();
     }
 
-    public synchronized void removeDecorator(DriverDecorator decorator) {
-        decorators.remove(decorator);
-        changePublisher.notifyObservers();
-    }
-
     public synchronized VisitableDriver getCurrentDriver() {
-        VisitableDriver driver = coreDriver;
-
-        if (extensionsComposite.getDriverCount() > 0) {
-            CompositeDriver activeDriver = new CompositeDriver(coreDriver.toString());
-            activeDriver.addDriver(coreDriver);
-            copyDrivers(extensionsComposite, activeDriver);
-            driver = activeDriver;
+        if (extensionsComposite.getDriverCount() == 0) {
+            return coreDriver;
         }
 
+        List<DriverDecorator> decorators = new ArrayList<>();
+        List<VisitableDriver> parallel = new ArrayList<>();
+
+        for (VisitableDriver extension : extensionsComposite.getDrivers()) {
+            if (extension instanceof DriverDecorator) {
+                decorators.add((DriverDecorator) extension);
+            } else {
+                parallel.add(extension);
+            }
+        }
+        VisitableDriver chain = coreDriver;
         for (DriverDecorator decorator : decorators) {
-            decorator.setInnerDriver(driver);
-            driver = decorator;
+            decorator.setInnerDriver(chain);
+            chain = decorator;
         }
-
-        return driver;
-    }
-
-    private void copyDrivers(CompositeDriver source, CompositeDriver target) {
-        for (VisitableDriver driver : source.getDrivers()) {
-            target.addDriver(driver);
+        if (parallel.isEmpty()) {
+            return chain;
         }
+        CompositeDriver activeDriver = new CompositeDriver(coreDriver.toString());
+        activeDriver.addDriver(chain);
+        for (VisitableDriver ext : parallel) {
+            activeDriver.addDriver(ext);
+        }
+        return activeDriver;
     }
 
     public synchronized VisitableDriver getCoreDriver() {

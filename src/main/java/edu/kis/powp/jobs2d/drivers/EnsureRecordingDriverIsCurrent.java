@@ -25,7 +25,7 @@ public class EnsureRecordingDriverIsCurrent implements Subscriber {
             return;
         }
 
-        recordingDriver.setTarget(current);
+        recordingDriver.setInnerDriver(current);
         driverManager.setCurrentDriver(recordingDriver);
     }
 }

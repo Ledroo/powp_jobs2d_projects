@@ -1,20 +1,22 @@
 package edu.kis.powp.jobs2d.drivers.transformations;
 
-
 import edu.kis.powp.jobs2d.drivers.visitor.DriverVisitor;
 import edu.kis.powp.jobs2d.drivers.visitor.VisitableDriver;
 
 import edu.kis.powp.jobs2d.drivers.DriverDecorator;
 
-public class TransformingDriver implements DriverDecorator {
-    private VisitableDriver innerDriver;
+public class TransformingDriver extends DriverDecorator {
     private final CoordinateTransformer transformer;
     private final String name;
 
     public TransformingDriver(VisitableDriver innerDriver, CoordinateTransformer transformer, String name) {
-        this.innerDriver = innerDriver;
+        super(innerDriver);
         this.transformer = transformer;
         this.name = name;
+    }
+
+    public TransformingDriver(CoordinateTransformer transformer, String name) {
+        this(null, transformer, name);
     }
 
     @Override
@@ -37,15 +39,5 @@ public class TransformingDriver implements DriverDecorator {
     @Override
     public void accept(DriverVisitor visitor) {
         visitor.visit(this);
-    }
-
-    @Override
-    public VisitableDriver getInnerDriver() {
-        return innerDriver;
-    }
-
-    @Override
-    public void setInnerDriver(VisitableDriver driver) {
-        this.innerDriver = driver;
     }
 }

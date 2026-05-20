@@ -1,6 +1,5 @@
 package edu.kis.powp.jobs2d.drivers;
 
-
 import edu.kis.powp.jobs2d.drivers.visitor.DriverVisitor;
 import edu.kis.powp.jobs2d.drivers.visitor.VisitableDriver;
 
@@ -9,8 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
-public class RealTimeDriver implements DriverDecorator {
-    private VisitableDriver innerDriver;
+public class RealTimeDriver extends DriverDecorator {
     private final int operationToDelayMs;
     private final int setPositionDelayMs;
     private final String name;
@@ -21,24 +19,17 @@ public class RealTimeDriver implements DriverDecorator {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public RealTimeDriver(VisitableDriver innerDriver, int operationToDelayMs, int setPositionDelayMs, String name) {
+        super(innerDriver);
         if (operationToDelayMs <= 0 || setPositionDelayMs <= 0) {
             throw new IllegalArgumentException("Delay must be a positive integer (milliseconds)!");
         }
-
-        this.innerDriver = innerDriver;
         this.operationToDelayMs = operationToDelayMs;
         this.setPositionDelayMs = setPositionDelayMs;
         this.name = name;
     }
 
-    @Override
-    public VisitableDriver getInnerDriver() {
-        return innerDriver;
-    }
-
-    @Override
-    public void setInnerDriver(VisitableDriver driver) {
-        this.innerDriver = driver;
+    public RealTimeDriver(int operationToDelayMs, int setPositionDelayMs, String name) {
+        this(null, operationToDelayMs, setPositionDelayMs, name);
     }
 
     @Override
@@ -79,7 +70,7 @@ public class RealTimeDriver implements DriverDecorator {
             int fx = x;
             int fy = y;
 
-            SwingUtilities.invokeLater(() -> biConsumer.accept(fx,fy));
+            SwingUtilities.invokeLater(() -> biConsumer.accept(fx, fy));
 
             if (x == x1 && y == y1) {
                 break;
