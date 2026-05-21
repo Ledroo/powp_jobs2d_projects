@@ -12,6 +12,13 @@ import edu.kis.powp.jobs2d.command.gui.CommandManagerWindow;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver;
 import edu.kis.powp.jobs2d.command.gui.CommandPreviewObserver;
 import edu.kis.powp.jobs2d.command.gui.CommandPreviewWindow;
+import edu.kis.powp.jobs2d.drivers.usage.LoggerUsageMonitorSubscriber;
+import edu.kis.powp.jobs2d.drivers.usage.UsageMonitorDriver;
+import edu.kis.powp.jobs2d.features.*;
+import edu.kis.powp.jobs2d.features.history.HistoryWindow;
+import edu.kis.powp.jobs2d.features.history.HistoryWindowObserver;
+import edu.kis.powp.jobs2d.features.history.UpdateHistoryOnCommandChangeObserver;
+import edu.kis.powp.jobs2d.features.history.SizeLimitHistorySubscriber;
 import edu.kis.powp.jobs2d.drivers.RealTimeDriver;
 import edu.kis.powp.jobs2d.drivers.RecordingDriver;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
@@ -22,8 +29,6 @@ import edu.kis.powp.jobs2d.drivers.transformations.FlipTransformer;
 import edu.kis.powp.jobs2d.drivers.transformations.RotateTransformer;
 import edu.kis.powp.jobs2d.drivers.transformations.ScaleTransformer;
 import edu.kis.powp.jobs2d.drivers.transformations.TransformingDriver;
-import edu.kis.powp.jobs2d.drivers.usage.LoggerUsageMonitorSubscriber;
-import edu.kis.powp.jobs2d.drivers.usage.UsageMonitorDriver;
 import edu.kis.powp.jobs2d.drivers.visitor.FullNameGetterVisitor;
 import edu.kis.powp.jobs2d.drivers.visitor.VisitableDriver;
 import edu.kis.powp.jobs2d.events.SelectCheckCanvasBoundsOptionListener;
@@ -40,20 +45,15 @@ import edu.kis.powp.jobs2d.events.SelectTestFigure2OptionListener;
 import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
 import edu.kis.powp.jobs2d.events.SelectToggleRecordingOptionListener;
 import edu.kis.powp.jobs2d.events.SelectTransformCommandOptionListener;
-import edu.kis.powp.jobs2d.features.CanvasFeature;
-import edu.kis.powp.jobs2d.features.CommandsFeature;
-import edu.kis.powp.jobs2d.features.DrawerFeature;
-import edu.kis.powp.jobs2d.features.DriverFeature;
-import edu.kis.powp.jobs2d.features.ExtensionFeature;
-import edu.kis.powp.jobs2d.features.FeaturesManager;
-import edu.kis.powp.jobs2d.features.RecordingFeature;
+
+import javax.swing.JSpinner;
 
 public class TestJobs2dApp {
     private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     /**
      * Setup test concerning preset figures in context.
-     * 
+     *
      * @param application Application context.
      */
     private static void setupPresetTests(Application application) {
@@ -68,7 +68,7 @@ public class TestJobs2dApp {
 
     /**
      * Setup test using driver commands in context.
-     * 
+     *
      * @param application Application context.
      */
     private static void setupCommandTests(Application application) {
@@ -101,7 +101,7 @@ public class TestJobs2dApp {
 
     /**
      * Setup driver manager, and set default VisitableDriver for application.
-     * 
+     *
      * @param application Application context.
      */
     private static void setupDrivers(Application application) {
@@ -178,6 +178,30 @@ public class TestJobs2dApp {
                 commandManager);
         CommandsFeature.getDriverCommandManager().getChangePublisher().addSubscriber(windowObserver);
 
+        HistoryWindow historyWindow = new HistoryWindow(HistoryFeature.getHistoryManager());
+        SizeLimitHistorySubscriber limitSubscriber = HistoryFeature.getSizeLimitSubscriber();
+        if (limitSubscriber != null) {
+            historyWindow.setLimitValue(limitSubscriber.getMaxSize());
+            historyWindow.addLimitChangeListener(e -> {
+                JSpinner spinner = (JSpinner) e.getSource();
+                limitSubscriber.setMaxSize((Integer) spinner.getValue());
+            });
+        }
+        historyWindow.addLoadButtonListener(e -> {
+            edu.kis.powp.jobs2d.features.history.HistoryEntry selected = historyWindow.getSelectedHistoryEntry();
+            if (selected != null && selected.getCommand() != null) {
+                CommandsFeature.getDriverCommandManager().setCurrentCommand(selected.getCommand());
+            }
+        });
+        application.addWindowComponent("History", historyWindow);
+
+        HistoryWindowObserver historyWindowObserver = new HistoryWindowObserver(historyWindow);
+        HistoryFeature.getHistoryManager().getChangePublisher().addSubscriber(historyWindowObserver);
+
+        UpdateHistoryOnCommandChangeObserver historyCommandObserver = new UpdateHistoryOnCommandChangeObserver(
+                HistoryFeature.getHistoryManager(), CommandsFeature.getDriverCommandManager());
+        CommandsFeature.getDriverCommandManager().getChangePublisher().addSubscriber(historyCommandObserver);
+
         CommandPreviewWindow commandPreview = new CommandPreviewWindow();
         application.addWindowComponent("Command Preview", commandPreview);
 
@@ -195,7 +219,7 @@ public class TestJobs2dApp {
 
     /**
      * Setup menu for adjusting logging settings.
-     * 
+     *
      * @param application Application context.
      */
     private static void setupLogger(Application application) {
@@ -228,6 +252,7 @@ public class TestJobs2dApp {
                 FeaturesManager.registerFeature(new ExtensionFeature());
                 FeaturesManager.registerFeature(new CanvasFeature());
                 FeaturesManager.registerFeature(new MouseClickFeature());
+                FeaturesManager.registerFeature(new HistoryFeature());
 
                 // Automatycznie skonfiguruj wszystkie zarejestrowane funkcje
                 // To zastępuje ręczne wywołania setup dla każdej funkcji
