@@ -51,7 +51,7 @@ public class RecordingDriver extends DriverDecorator {
         if (recordingEnabled) {
             recorded.add(new SetPositionCommand(x, y));
         }
-        innerDriver.setPosition(x, y);
+        super.setPosition(x, y);
     }
 
     @Override
@@ -59,12 +59,12 @@ public class RecordingDriver extends DriverDecorator {
         if (recordingEnabled) {
             recorded.add(new OperateToCommand(x, y));
         }
-        innerDriver.operateTo(x, y);
+        super.operateTo(x, y);
     }
 
     @Override
     public synchronized String toString() {
-        return "RecordingDriver -> " + innerDriver;
+        return "RecordingDriver -> " + getInnerDriver();
     }
 
     @Override

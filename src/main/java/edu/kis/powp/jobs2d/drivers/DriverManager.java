@@ -5,8 +5,8 @@ import edu.kis.powp.jobs2d.drivers.packet_composite.CompositeDriver;
 import edu.kis.powp.jobs2d.drivers.visitor.VisitableDriver;
 import edu.kis.powp.observer.Publisher;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Driver manager provides means to setup the driver. It also enables other
@@ -15,7 +15,8 @@ import java.util.List;
 public class DriverManager {
 
     private VisitableDriver coreDriver = new TrackingLoggerDriver();
-    private CompositeDriver extensionsComposite = new CompositeDriver("Extensions");
+    private final List<DriverDecorator> decoratorExtensions = new LinkedList<>();
+    private final List<VisitableDriver> parallelExtensions = new LinkedList<>();
     private Publisher changePublisher = new Publisher();
 
     public synchronized void setCurrentDriver(VisitableDriver driver) {
@@ -23,42 +24,38 @@ public class DriverManager {
         changePublisher.notifyObservers();
     }
 
+    public synchronized void addDecoratorExtension(DriverDecorator extension) {
+        decoratorExtensions.add(extension);
+        changePublisher.notifyObservers();
+    }
+
+    public synchronized void removeDecoratorExtension(DriverDecorator extension) {
+        decoratorExtensions.remove(extension);
+        changePublisher.notifyObservers();
+    }
+
     public synchronized void addExtension(VisitableDriver extension) {
-        extensionsComposite.addDriver(extension);
+        parallelExtensions.add(extension);
         changePublisher.notifyObservers();
     }
 
     public synchronized void removeExtension(VisitableDriver extension) {
-        extensionsComposite.removeDriver(extension);
+        parallelExtensions.remove(extension);
         changePublisher.notifyObservers();
     }
 
     public synchronized VisitableDriver getCurrentDriver() {
-        if (extensionsComposite.getDriverCount() == 0) {
-            return coreDriver;
-        }
-
-        List<DriverDecorator> decorators = new ArrayList<>();
-        List<VisitableDriver> parallel = new ArrayList<>();
-
-        for (VisitableDriver extension : extensionsComposite.getDrivers()) {
-            if (extension instanceof DriverDecorator) {
-                decorators.add((DriverDecorator) extension);
-            } else {
-                parallel.add(extension);
-            }
-        }
         VisitableDriver chain = coreDriver;
-        for (DriverDecorator decorator : decorators) {
+        for (DriverDecorator decorator : decoratorExtensions) {
             decorator.setInnerDriver(chain);
             chain = decorator;
         }
-        if (parallel.isEmpty()) {
+        if (parallelExtensions.isEmpty()) {
             return chain;
         }
         CompositeDriver activeDriver = new CompositeDriver(coreDriver.toString());
         activeDriver.addDriver(chain);
-        for (VisitableDriver ext : parallel) {
+        for (VisitableDriver ext : parallelExtensions) {
             activeDriver.addDriver(ext);
         }
         return activeDriver;

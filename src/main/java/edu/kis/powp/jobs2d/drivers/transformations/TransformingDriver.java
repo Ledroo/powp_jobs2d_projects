@@ -22,13 +22,13 @@ public class TransformingDriver extends DriverDecorator {
     @Override
     public void setPosition(int x, int y) {
         int[] newCoords = transformer.transform(x, y);
-        innerDriver.setPosition(newCoords[0], newCoords[1]);
+        super.setPosition(newCoords[0], newCoords[1]);
     }
 
     @Override
     public void operateTo(int x, int y) {
         int[] newCoords = transformer.transform(x, y);
-        innerDriver.operateTo(newCoords[0], newCoords[1]);
+        super.operateTo(newCoords[0], newCoords[1]);
     }
 
     @Override

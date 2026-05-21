@@ -134,28 +134,28 @@ public class TestJobs2dApp {
                 VisitableDriver loggerDriver = new TrackingLoggerDriver();
                 ExtensionFeature.addExtension("Logger", loggerDriver);
 
-                ExtensionFeature.addExtension("Recording", RecordingFeature.getRecordingDriver());
+                ExtensionFeature.addDecoratorExtension("Recording", RecordingFeature.getRecordingDriver());
 
-                VisitableDriver transformExt = new TransformingDriver(new ScaleTransformer(2.0, 2.0), "Transform: Scaled 2x");
-                ExtensionFeature.addExtension("Scale 2x", transformExt);
+                TransformingDriver transformExt = new TransformingDriver(new ScaleTransformer(2.0, 2.0), "Transform: Scaled 2x");
+                ExtensionFeature.addDecoratorExtension("Scale 2x", transformExt);
 
-                VisitableDriver scaledDownDriver = new TransformingDriver(new ScaleTransformer(0.5, 0.5), "Transform: Scaled 0.5x");
-                ExtensionFeature.addExtension("Scale 0.5x", scaledDownDriver);
+                TransformingDriver scaledDownDriver = new TransformingDriver(new ScaleTransformer(0.5, 0.5), "Transform: Scaled 0.5x");
+                ExtensionFeature.addDecoratorExtension("Scale 0.5x", scaledDownDriver);
 
-                VisitableDriver flippedDriver = new TransformingDriver(new FlipTransformer(false, true), "Transform: Flipped Y");
-                ExtensionFeature.addExtension("Flip Y", flippedDriver);
+                TransformingDriver flippedDriver = new TransformingDriver(new FlipTransformer(false, true), "Transform: Flipped Y");
+                ExtensionFeature.addDecoratorExtension("Flip Y", flippedDriver);
 
-                VisitableDriver rotatedDriver = new TransformingDriver(new RotateTransformer(45.0), "Transform: Rotated 45 degrees");
-                ExtensionFeature.addExtension("Rotate 45 degrees", rotatedDriver);
+                TransformingDriver rotatedDriver = new TransformingDriver(new RotateTransformer(45.0), "Transform: Rotated 45 degrees");
+                ExtensionFeature.addDecoratorExtension("Rotate 45 degrees", rotatedDriver);
 
-                VisitableDriver realTime1x = new RealTimeDriver(10, 10, "Real-Time Driver 1x speed");
-                ExtensionFeature.addExtension("Real-Time 1x", realTime1x);
+                RealTimeDriver realTime1x = new RealTimeDriver(10, 10, "Real-Time Driver 1x speed");
+                ExtensionFeature.addDecoratorExtension("Real-Time 1x", realTime1x);
 
-                VisitableDriver realTime2x = new RealTimeDriver(5, 5, "Real-Time Driver 2x speed");
-                ExtensionFeature.addExtension("Real-Time 2x", realTime2x);
+                RealTimeDriver realTime2x = new RealTimeDriver(5, 5, "Real-Time Driver 2x speed");
+                ExtensionFeature.addDecoratorExtension("Real-Time 2x", realTime2x);
 
-                VisitableDriver realTime10x = new RealTimeDriver(1, 1, "Real-Time Driver 10x speed");
-                ExtensionFeature.addExtension("Real-Time 10x", realTime10x);
+                RealTimeDriver realTime10x = new RealTimeDriver(1, 1, "Real-Time Driver 10x speed");
+                ExtensionFeature.addDecoratorExtension("Real-Time 10x", realTime10x);
         }
 
         private static void setupWindows(Application application) {

@@ -40,7 +40,10 @@ public class RealTimeDriver extends DriverDecorator {
         currentX = x;
         currentY = y;
 
-        executor.submit(() -> moveRealTime(startX, startY, x, y, innerDriver::operateTo, operationToDelayMs));
+        VisitableDriver inner = getInnerDriver();
+        if (inner != null) {
+            executor.submit(() -> moveRealTime(startX, startY, x, y, inner::operateTo, operationToDelayMs));
+        }
     }
 
     @Override
@@ -51,7 +54,10 @@ public class RealTimeDriver extends DriverDecorator {
         currentX = x;
         currentY = y;
 
-        executor.submit(() -> moveRealTime(startX, startY, x, y, innerDriver::setPosition, setPositionDelayMs));
+        VisitableDriver inner = getInnerDriver();
+        if (inner != null) {
+            executor.submit(() -> moveRealTime(startX, startY, x, y, inner::setPosition, setPositionDelayMs));
+        }
     }
 
     private void moveRealTime(int x0, int y0, int x1, int y1, BiConsumer<Integer, Integer> biConsumer, int delay) {

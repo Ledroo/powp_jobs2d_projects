@@ -4,12 +4,13 @@ import edu.kis.powp.jobs2d.drivers.visitor.VisitableDriver;
 
 /**
  * Abstract base class for driver decorators.
- * Provides common innerDriver field with getter and setter
- * to avoid code duplication in all implementations.
+ * Subclasses should call super.setPosition / super.operateTo to delegate
+ * to the inner driver. Delegation is skipped silently when innerDriver is null
+ * (e.g. before the decorator is wired up by DriverManager).
  */
 public abstract class DriverDecorator implements VisitableDriver {
 
-    protected VisitableDriver innerDriver;
+    private VisitableDriver innerDriver;
 
     protected DriverDecorator(VisitableDriver innerDriver) {
         this.innerDriver = innerDriver;
@@ -21,5 +22,19 @@ public abstract class DriverDecorator implements VisitableDriver {
 
     public void setInnerDriver(VisitableDriver driver) {
         this.innerDriver = driver;
+    }
+
+    @Override
+    public void setPosition(int x, int y) {
+        if (innerDriver != null) {
+            innerDriver.setPosition(x, y);
+        }
+    }
+
+    @Override
+    public void operateTo(int x, int y) {
+        if (innerDriver != null) {
+            innerDriver.operateTo(x, y);
+        }
     }
 }
