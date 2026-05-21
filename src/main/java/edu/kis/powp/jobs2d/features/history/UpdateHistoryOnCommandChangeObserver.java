@@ -3,12 +3,12 @@ package edu.kis.powp.jobs2d.features.history;
 import edu.kis.powp.jobs2d.command.manager.CommandManager;
 import edu.kis.powp.observer.Subscriber;
 
-public class HistoryCommandChangeObserver implements Subscriber {
+public class UpdateHistoryOnCommandChangeObserver implements Subscriber {
 
     private HistoryManager historyManager;
     private CommandManager commandManager;
 
-    public HistoryCommandChangeObserver(HistoryManager historyManager, CommandManager commandManager) {
+    public UpdateHistoryOnCommandChangeObserver(HistoryManager historyManager, CommandManager commandManager) {
         this.historyManager = historyManager;
         this.commandManager = commandManager;
     }
