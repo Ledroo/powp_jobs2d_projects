@@ -55,8 +55,7 @@ public class CanvasFeature implements IFeature {
             return;
         }
 
-        format.toCommand()
-                .execute(new LineDriverAdapter(DrawerFeature.getDrawerController(), guidesLineType, "Canvas Guides"));
+        format.toCommand().execute(new LineDriverAdapter(DrawerFeature.getDrawerController(), guidesLineType, "Canvas Guides"));
 
         currentFormat = format;
     }

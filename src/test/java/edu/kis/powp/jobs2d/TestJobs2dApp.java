@@ -80,8 +80,7 @@ public class TestJobs2dApp {
         application.addTest("Load recorded macro", new SelectLoadRecordedMacroOptionListener());
 
         application.addTest("Clear panel", new SelectClearPanelOptionListener());
-        application.addTest("Run command",
-                new SelectRunCurrentCommandOptionListener(DriverFeature.getDriverManager()));
+        application.addTest("Run command", new SelectRunCurrentCommandOptionListener(DriverFeature.getDriverManager()));
         application.addTest("Count current command", new SelectCountCommandsOptionListener());
 
         application.addTest("Check current command bounds", new SelectCheckCanvasBoundsOptionListener());
@@ -90,8 +89,7 @@ public class TestJobs2dApp {
         application.addTest("Transform current command: Scale 0.5x",
                 new SelectTransformCommandOptionListener(new ScaleTransformer(0.5, 0.5), "Scale 0.5x"));
         application.addTest("Transform current command: Rotate 45 degrees",
-                new SelectTransformCommandOptionListener(new RotateTransformer(45.0),
-                        "Rotate 45 degrees"));
+                new SelectTransformCommandOptionListener(new RotateTransformer(45.0), "Rotate 45 degrees"));
         application.addTest("Transform current command: Flip Y",
                 new SelectTransformCommandOptionListener(new FlipTransformer(false, true), "Flip Y"));
         application.addTest("FullNameGetter visitor test",
@@ -117,12 +115,10 @@ public class TestJobs2dApp {
         DriverFeature.addDriver("Special line Simulator", driver);
 
         UsageMonitorDriver usageMonitorDriver = new UsageMonitorDriver();
-        usageMonitorDriver.getChangePublisher()
-                .addSubscriber(new LoggerUsageMonitorSubscriber(usageMonitorDriver));
+        usageMonitorDriver.getChangePublisher().addSubscriber(new LoggerUsageMonitorSubscriber(usageMonitorDriver));
         CompositeDriver monitoredDriverComposite = new CompositeDriver("Line Simulator with Usage Monitor");
         monitoredDriverComposite
-                .addDriver(new LineDriverAdapter(drawerController, LineFactory.getBasicLine(),
-                        "basic"));
+                .addDriver(new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic"));
         monitoredDriverComposite.addDriver(usageMonitorDriver);
         DriverFeature.addDriver(monitoredDriverComposite.toString(), monitoredDriverComposite);
 
@@ -175,8 +171,7 @@ public class TestJobs2dApp {
 
     private static void setupWindows(Application application) {
 
-        CommandManagerWindow commandManager = new CommandManagerWindow(
-                CommandsFeature.getDriverCommandManager());
+        CommandManagerWindow commandManager = new CommandManagerWindow(CommandsFeature.getDriverCommandManager());
         application.addWindowComponent("Command Manager", commandManager);
 
         CommandManagerWindowCommandChangeObserver windowObserver = new CommandManagerWindowCommandChangeObserver(
@@ -211,15 +206,13 @@ public class TestJobs2dApp {
         application.addWindowComponent("Command Preview", commandPreview);
 
         DrawPanelController previewDrawController = commandPreview.getDrawPanelController();
-        VisitableDriver basicDriver = new LineDriverAdapter(previewDrawController, LineFactory.getBasicLine(),
-                "basic");
+        VisitableDriver basicDriver = new LineDriverAdapter(previewDrawController, LineFactory.getBasicLine(), "basic");
         CoordinateTransformer scaleDown = new ScaleTransformer(0.5, 0.5);
         VisitableDriver scaledDownDriver = new TransformingDriver(basicDriver, scaleDown,
                 "Preview Transform: Scaled 0.5x");
         commandPreview.setPreviewDriver(scaledDownDriver);
 
-        CommandPreviewObserver previewObserver = new CommandPreviewObserver(
-                CommandsFeature.getDriverCommandManager(),
+        CommandPreviewObserver previewObserver = new CommandPreviewObserver(CommandsFeature.getDriverCommandManager(),
                 commandPreview);
         CommandsFeature.getDriverCommandManager().getChangePublisher().addSubscriber(previewObserver);
     }
@@ -234,16 +227,13 @@ public class TestJobs2dApp {
         application.addComponentMenu(Logger.class, "Logger", 0);
         application.addComponentMenuElement(Logger.class, "Clear log",
                 (ActionEvent e) -> application.flushLoggerOutput());
-        application.addComponentMenuElement(Logger.class, "Fine level",
-                (ActionEvent e) -> logger.setLevel(Level.FINE));
-        application.addComponentMenuElement(Logger.class, "Info level",
-                (ActionEvent e) -> logger.setLevel(Level.INFO));
+        application.addComponentMenuElement(Logger.class, "Fine level", (ActionEvent e) -> logger.setLevel(Level.FINE));
+        application.addComponentMenuElement(Logger.class, "Info level", (ActionEvent e) -> logger.setLevel(Level.INFO));
         application.addComponentMenuElement(Logger.class, "Warning level",
                 (ActionEvent e) -> logger.setLevel(Level.WARNING));
         application.addComponentMenuElement(Logger.class, "Severe level",
                 (ActionEvent e) -> logger.setLevel(Level.SEVERE));
-        application.addComponentMenuElement(Logger.class, "OFF logging",
-                (ActionEvent e) -> logger.setLevel(Level.OFF));
+        application.addComponentMenuElement(Logger.class, "OFF logging", (ActionEvent e) -> logger.setLevel(Level.OFF));
     }
 
     /**
